@@ -15,6 +15,7 @@ public class Main {
 			System.out.println("1 - za³aduj macierz z pliku;");
 			System.out.println("2 - wyœwietl macierz;");
 			System.out.println("3 - dodaj wierzcho³ek i jego krawêdzie;");
+			System.out.println("4 - usuñ wierzcho³ek i jego krawêdzie;");
 			System.out.println("Wybierz polecenie: ");
 			command = scan.nextInt();
 
@@ -30,6 +31,8 @@ public class Main {
 				}
 			} else if(command == 3){
 				addVertex();
+			} else if(command == 4){
+				removeVertex();
 			}
 		}
 		scan.close();
@@ -79,6 +82,22 @@ public class Main {
 		
 		System.out.println("Poprawnie dodano nowy wierzcho³ek.");
 		//scanVert.close();
+	}
+	
+	//Usuwanie wierzcho³ka
+	@SuppressWarnings("unchecked")
+	public static void removeVertex(){
+		@SuppressWarnings("resource")
+		Scanner scanVert = new Scanner(System.in);
+		System.out.println("Proszê podaæ nr wierzcho³ka do usuniêcia: ");
+		int vert = scanVert.nextInt() - 1;
+		
+		matrix.remove(vert);
+		for(int i = 0; i < matrix.size(); i++){
+			((ArrayList<Integer>)matrix.get(i)).remove(vert);
+		}
+		
+		System.out.println("Poprawnie usuniêto podany wierzcho³ek.");
 	}
 	
 }
