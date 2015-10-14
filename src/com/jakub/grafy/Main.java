@@ -28,6 +28,8 @@ public class Main {
 						System.out.print(((ArrayList<?>)matrix.get(i)).get(j) + " | ");
 					}
 				}
+			} else if(command == 3){
+				addVertex();
 			}
 		}
 		scan.close();
@@ -35,15 +37,13 @@ public class Main {
 	}
 
 	//Wczytywanie macierzy z pliku
-	@SuppressWarnings({ "resource", "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	public static void loadMatrix() throws Exception {
 		File file = new File("Macierz.txt");
 		Scanner sc = new Scanner(file);
 		matrix.clear();
 
 		//Tworzê macierz
-		sc = new Scanner(file);
-
 		int lineCount = 0;
 		while (sc.hasNextLine()) {
 			String[] currentLine = sc.nextLine().trim().split(" "); 
@@ -57,8 +57,28 @@ public class Main {
 	}
 	
 	//Dodawanie wierzcho³ka
+	@SuppressWarnings("unchecked")
 	public static void addVertex(){
+		@SuppressWarnings("resource")
+		Scanner scanVert = new Scanner(System.in);
+		int size = matrix.size() + 1;
+		System.out.println("Proszê podaæ liczby kolejnych " + size + " krawêdzi (oddzielone spacj¹): ");
+		String[] newData = scanVert.nextLine().trim().split(" "); 
 		
+		//Dodajê now¹ informacjê na koñcu ka¿dego wiersza
+		for(int i = 0; i < matrix.size(); i++){
+			((ArrayList<Integer>)matrix.get(i)).add(Integer.parseInt(newData[i]));
+		}
+
+		//Dodajê nowy wiersz
+		matrix.add(new ArrayList<Object>());
+		size = matrix.size() - 1;
+		for (int i = 0; i < newData.length; i++) {
+			((ArrayList<Integer>)matrix.get(size)).add(Integer.parseInt(newData[i]));
+		}
+		
+		System.out.println("Poprawnie dodano nowy wierzcho³ek.");
+		//scanVert.close();
 	}
 	
 }
