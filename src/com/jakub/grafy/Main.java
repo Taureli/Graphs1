@@ -11,6 +11,7 @@ public class Main {
 	public static void main(String args[]) throws Exception{
 		int command = -1;
 		int vert, deg, size;
+		int deg2[];
 		String[] newData;
 		Scanner scan = new Scanner(System.in);
 		Scanner scanVert = new Scanner(System.in);
@@ -57,6 +58,10 @@ public class Main {
 					deg = vertDeg(vert);
 					System.out.println("Stopieñ wierzcho³ka wynosi: " + deg);
 					break;
+				case(6):
+					deg2 = minMaxDeg();
+					System.out.println("Stopieñ minimalny: " + deg2[0]);
+					System.out.println("Stopieñ maksymalny: " + deg2[1]);
 			}
 		}
 		scan.close();
@@ -123,6 +128,26 @@ public class Main {
 		}
 		
 		deg = 2 * loops + edges;
+		return deg;
+	}
+	
+	//Stopieñ minimalny i maksymalny
+	public static int[] minMaxDeg(){
+		int min = vertDeg(0);
+		int max = vertDeg(0);
+		int deg[] = new int[2];
+		int temp;
+		
+		for(int i = 0; i < matrix.size(); i++){
+			temp = vertDeg(i);
+			if(temp < min)
+				min = temp;
+			else if(temp > max)
+				max = temp;
+		}
+		
+		deg[0] = min;
+		deg[1] = max;
 		return deg;
 	}
 	
