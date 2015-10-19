@@ -7,32 +7,56 @@ import java.util.Scanner;
 public class Main {
 	static ArrayList<ArrayList<?>> matrix = new ArrayList<ArrayList<?>>();
 	
+	@SuppressWarnings("resource")
 	public static void main(String args[]) throws Exception{
 		int command = -1;
+		int vert, deg, size;
+		String[] newData;
 		Scanner scan = new Scanner(System.in);
+		Scanner scanVert = new Scanner(System.in);
 		while(command != 0){
 			System.out.println("\n0 - zakoñcz program;");
 			System.out.println("1 - za³aduj macierz z pliku;");
 			System.out.println("2 - wyœwietl macierz;");
 			System.out.println("3 - dodaj wierzcho³ek i jego krawêdzie;");
 			System.out.println("4 - usuñ wierzcho³ek i jego krawêdzie;");
+			System.out.println("5 - podaj stopieñ wierzcho³ka;");
+			System.out.println("6 - podaj stopieñ minimalny i maksymalny grafu;");
 			System.out.println("Wybierz polecenie: ");
 			command = scan.nextInt();
 
-			if(command == 1){
-				loadMatrix();
-				System.out.println("Wczytano macierz z pliku.");
-			} else if(command == 2){
-				for(int i = 0; i < matrix.size(); i++){
-					System.out.println();
-					for(int j = 0; j < ((ArrayList<?>)matrix.get(i)).size(); j++){
-						System.out.print(((ArrayList<?>)matrix.get(i)).get(j) + " | ");
+			switch(command){
+				case(1):
+					loadMatrix();
+					System.out.println("Wczytano macierz z pliku.");
+					break;
+				case(2):
+					for(int i = 0; i < matrix.size(); i++){
+						System.out.println();
+						for(int j = 0; j < ((ArrayList<?>)matrix.get(i)).size(); j++){
+							System.out.print(((ArrayList<?>)matrix.get(i)).get(j) + " | ");
+						}
 					}
-				}
-			} else if(command == 3){
-				addVertex();
-			} else if(command == 4){
-				removeVertex();
+					break;
+				case(3):
+					size = matrix.size() + 1;
+					System.out.println("Proszê podaæ liczby kolejnych " + size + " krawêdzi (oddzielone spacj¹): ");
+					newData = scanVert.nextLine().trim().split(" "); 
+					addVertex(newData);
+					System.out.println("Dodano nowy wierzcho³ek.");
+					break;
+				case(4):
+					System.out.println("Proszê podaæ nr wierzcho³ka do usuniêcia: ");
+					vert = scanVert.nextInt() - 1;
+					removeVertex(vert);
+					System.out.println("Usuniêto podany wierzcho³ek.");
+					break;
+				case(5):
+					System.out.println("Proszê podaæ nr wierzcho³ka: ");
+					vert = scanVert.nextInt() - 1;
+					deg = vertDeg(vert);
+					System.out.println("Stopieñ wierzcho³ka wynosi: " + deg);
+					break;
 			}
 		}
 		scan.close();
@@ -61,13 +85,7 @@ public class Main {
 	
 	//Dodawanie wierzcho³ka
 	@SuppressWarnings("unchecked")
-	public static void addVertex(){
-		@SuppressWarnings("resource")
-		Scanner scanVert = new Scanner(System.in);
-		int size = matrix.size() + 1;
-		System.out.println("Proszê podaæ liczby kolejnych " + size + " krawêdzi (oddzielone spacj¹): ");
-		String[] newData = scanVert.nextLine().trim().split(" "); 
-		
+	public static void addVertex(String[] newData){		
 		//Dodajê now¹ informacjê na koñcu ka¿dego wiersza
 		for(int i = 0; i < matrix.size(); i++){
 			((ArrayList<Integer>)matrix.get(i)).add(Integer.parseInt(newData[i]));
@@ -75,29 +93,37 @@ public class Main {
 
 		//Dodajê nowy wiersz
 		matrix.add(new ArrayList<Object>());
-		size = matrix.size() - 1;
+		int size = matrix.size() - 1;
 		for (int i = 0; i < newData.length; i++) {
 			((ArrayList<Integer>)matrix.get(size)).add(Integer.parseInt(newData[i]));
 		}
-		
-		System.out.println("Poprawnie dodano nowy wierzcho³ek.");
-		//scanVert.close();
 	}
 	
 	//Usuwanie wierzcho³ka
 	@SuppressWarnings("unchecked")
-	public static void removeVertex(){
-		@SuppressWarnings("resource")
-		Scanner scanVert = new Scanner(System.in);
-		System.out.println("Proszê podaæ nr wierzcho³ka do usuniêcia: ");
-		int vert = scanVert.nextInt() - 1;
-		
+	public static void removeVertex(int vert){		
 		matrix.remove(vert);
 		for(int i = 0; i < matrix.size(); i++){
 			((ArrayList<Integer>)matrix.get(i)).remove(vert);
 		}
+	}
+	
+	//Stopieñ wierzcho³ka
+	@SuppressWarnings("unchecked")
+	public static int vertDeg(int vert){
+		int deg;
+		int loops = 0;
+		int edges = 0;
 		
-		System.out.println("Poprawnie usuniêto podany wierzcho³ek.");
+		for(int i = 0; i < matrix.size(); i++){
+			if(i == vert)
+				loops = ((ArrayList<Integer>)matrix.get(vert)).get(i);
+			else
+				edges += ((ArrayList<Integer>)matrix.get(vert)).get(i);
+		}
+		
+		deg = 2 * loops + edges;
+		return deg;
 	}
 	
 }
