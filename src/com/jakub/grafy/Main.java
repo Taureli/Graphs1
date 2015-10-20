@@ -26,6 +26,7 @@ public class Main {
 			System.out.println("5 - podaj stopieñ wierzcho³ka;");
 			System.out.println("6 - podaj stopieñ minimalny i maksymalny grafu;");
 			System.out.println("7 - wyœwietl posortowan¹ listê stopni;");
+			System.out.println("8 - mno¿enie macierzy;");
 			System.out.println("Wybierz polecenie: ");
 			command = scan.nextInt();
 
@@ -73,6 +74,9 @@ public class Main {
 						System.out.print(degList.get(i) + " ");
 					}
 					degList.clear();
+					break;
+				case(8):
+					matrixMultiply();
 					break;
 			}
 		}
@@ -177,6 +181,32 @@ public class Main {
 		Collections.sort(sortedList);
 		Collections.reverse(sortedList);
 		return sortedList;
+	}
+	
+	//Mno¿enie macierzy
+	@SuppressWarnings("unchecked")
+	public static void matrixMultiply(){
+		ArrayList<ArrayList<?>> resultMatrix = new ArrayList<ArrayList<?>>();
+		int temp = 0;
+		
+		for(int i = 0; i < matrix.size(); i++){
+			resultMatrix.add(new ArrayList<Object>());
+			for(int j = 0; j < matrix.size(); j++){
+				temp = 0;
+				for(int k = 0; k < matrix.size(); k++){
+					temp += ((ArrayList<Integer>)matrix.get(i)).get(k) * ((ArrayList<Integer>)matrix.get(j)).get(k);
+				}
+				((ArrayList<Integer>)resultMatrix.get(i)).add(temp);
+			}
+		}
+		
+		for(int i = 0; i < resultMatrix.size(); i++){
+			System.out.println();
+			for(int j = 0; j < ((ArrayList<?>)resultMatrix.get(i)).size(); j++){
+				System.out.print(((ArrayList<?>)resultMatrix.get(i)).get(j) + " | ");
+			}
+		}
+		
 	}
 	
 }
