@@ -2,6 +2,7 @@ package com.jakub.grafy;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Main {
@@ -13,6 +14,7 @@ public class Main {
 		int vert, deg, size;
 		int deg2[];
 		String[] newData;
+		ArrayList<Integer> degList = null;
 		Scanner scan = new Scanner(System.in);
 		Scanner scanVert = new Scanner(System.in);
 		while(command != 0){
@@ -23,6 +25,7 @@ public class Main {
 			System.out.println("4 - usuñ wierzcho³ek i jego krawêdzie;");
 			System.out.println("5 - podaj stopieñ wierzcho³ka;");
 			System.out.println("6 - podaj stopieñ minimalny i maksymalny grafu;");
+			System.out.println("7 - wyœwietl posortowan¹ listê stopni;");
 			System.out.println("Wybierz polecenie: ");
 			command = scan.nextInt();
 
@@ -62,6 +65,15 @@ public class Main {
 					deg2 = minMaxDeg();
 					System.out.println("Stopieñ minimalny: " + deg2[0]);
 					System.out.println("Stopieñ maksymalny: " + deg2[1]);
+					break;
+				case(7):
+					degList = sortedDeg();
+					System.out.println("Posortowana lista stopni: ");
+					for(int i = 0; i < degList.size(); i++){
+						System.out.print(degList.get(i) + " ");
+					}
+					degList.clear();
+					break;
 			}
 		}
 		scan.close();
@@ -149,6 +161,22 @@ public class Main {
 		deg[0] = min;
 		deg[1] = max;
 		return deg;
+	}
+	
+	//Posortowana malej¹co lista stopni
+	public static ArrayList<Integer> sortedDeg(){
+		ArrayList<Integer> sortedList = new ArrayList<>();
+		int temp;
+		
+		//Liczê wszystkie stopnie
+		for(int i = 0; i < matrix.size(); i++){
+			temp = vertDeg(i);
+			sortedList.add(temp);
+		}
+		
+		Collections.sort(sortedList);
+		Collections.reverse(sortedList);
+		return sortedList;
 	}
 	
 }
