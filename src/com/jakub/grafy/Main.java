@@ -15,8 +15,10 @@ public class Main {
 		int deg2[];
 		String[] newData;
 		ArrayList<Integer> degList = null;
+		ArrayList<ArrayList<?>> tempMatrix = new ArrayList<ArrayList<?>>();
 		Scanner scan = new Scanner(System.in);
 		Scanner scanVert = new Scanner(System.in);
+		
 		while(command != 0){
 			System.out.println("\n0 - zakoñcz program;");
 			System.out.println("1 - za³aduj macierz z pliku;");
@@ -26,7 +28,7 @@ public class Main {
 			System.out.println("5 - podaj stopieñ wierzcho³ka;");
 			System.out.println("6 - podaj stopieñ minimalny i maksymalny grafu;");
 			System.out.println("7 - wyœwietl posortowan¹ listê stopni;");
-			System.out.println("8 - mno¿enie macierzy;");
+			System.out.println("8 - wyœwietl iloœæ cykli C3;");
 			System.out.println("Wybierz polecenie: ");
 			command = scan.nextInt();
 
@@ -76,7 +78,9 @@ public class Main {
 					degList.clear();
 					break;
 				case(8):
-					matrixMultiply();
+					tempMatrix = matrixMultiply(matrixMultiply(matrix));
+					checkCycles(tempMatrix);
+					tempMatrix.clear();
 					break;
 			}
 		}
@@ -185,7 +189,7 @@ public class Main {
 	
 	//Mno¿enie macierzy
 	@SuppressWarnings("unchecked")
-	public static void matrixMultiply(){
+	public static ArrayList<ArrayList<?>> matrixMultiply(ArrayList<ArrayList<?>> givenMatrix){
 		ArrayList<ArrayList<?>> resultMatrix = new ArrayList<ArrayList<?>>();
 		int temp = 0;
 		
@@ -194,19 +198,36 @@ public class Main {
 			for(int j = 0; j < matrix.size(); j++){
 				temp = 0;
 				for(int k = 0; k < matrix.size(); k++){
-					temp += ((ArrayList<Integer>)matrix.get(i)).get(k) * ((ArrayList<Integer>)matrix.get(j)).get(k);
+					temp += ((ArrayList<Integer>)givenMatrix.get(i)).get(k) * ((ArrayList<Integer>)matrix.get(j)).get(k);
 				}
 				((ArrayList<Integer>)resultMatrix.get(i)).add(temp);
 			}
 		}
 		
-		for(int i = 0; i < resultMatrix.size(); i++){
-			System.out.println();
-			for(int j = 0; j < ((ArrayList<?>)resultMatrix.get(i)).size(); j++){
-				System.out.print(((ArrayList<?>)resultMatrix.get(i)).get(j) + " | ");
-			}
+//		for(int i = 0; i < resultMatrix.size(); i++){
+//			System.out.println();
+//			for(int j = 0; j < ((ArrayList<?>)resultMatrix.get(i)).size(); j++){
+//				System.out.print(((ArrayList<?>)resultMatrix.get(i)).get(j) + " | ");
+//			}
+//		}
+		return resultMatrix;
+	}
+	
+	//Szukanie C3 w macierzy s¹siedztwa
+	@SuppressWarnings("unchecked")
+	private static void checkCycles(ArrayList<ArrayList<?>> tempMatrix) {
+		int diagSum = 0;
+		
+		for(int i = 0; i < tempMatrix.size(); i++){
+			diagSum += ((ArrayList<Integer>)tempMatrix.get(i)).get(i);
 		}
 		
+		if(diagSum == 0){
+			System.out.println("W aktualnym grafie nie wystêpuj¹ cykle C3");
+		} else {
+			//Dla grafów nieskierowanych
+			System.out.println("Iloœæ cykli C3 w aktualnym grafie: " + (diagSum/6));
+		}
 	}
 	
 }
