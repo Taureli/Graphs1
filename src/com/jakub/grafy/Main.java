@@ -14,7 +14,7 @@ public class Main {
 		int vert, deg, size;
 		int deg2[];
 		String[] newData;
-		ArrayList<Integer> degList = null;
+		ArrayList<Integer> degList = new ArrayList<Integer>();
 		ArrayList<ArrayList<?>> tempMatrix = new ArrayList<ArrayList<?>>();
 		Scanner scan = new Scanner(System.in);
 		Scanner scanVert = new Scanner(System.in);
@@ -29,6 +29,7 @@ public class Main {
 			System.out.println("6 - podaj stopieñ minimalny i maksymalny grafu;");
 			System.out.println("7 - wyœwietl posortowan¹ listê stopni;");
 			System.out.println("8 - wyœwietl iloœæ cykli C3;");
+			System.out.println("9 - sprawdŸ, czy podany ci¹g jest graficzny;");
 			System.out.println("Wybierz polecenie: ");
 			command = scan.nextInt();
 
@@ -49,20 +50,33 @@ public class Main {
 					size = matrix.size() + 1;
 					System.out.println("Proszê podaæ liczby kolejnych " + size + " krawêdzi (oddzielone spacj¹): ");
 					newData = scanVert.nextLine().trim().split(" "); 
-					addVertex(newData);
-					System.out.println("Dodano nowy wierzcho³ek.");
+					if(newData.length == size){
+						addVertex(newData);
+						System.out.println("Dodano nowy wierzcho³ek.");
+					} else {
+						System.out.println("Podano z³e wartoœci!");
+					}
+					newData = null;
 					break;
 				case(4):
 					System.out.println("Proszê podaæ nr wierzcho³ka do usuniêcia: ");
 					vert = scanVert.nextInt() - 1;
-					removeVertex(vert);
-					System.out.println("Usuniêto podany wierzcho³ek.");
+					if(vert < 0 || vert > matrix.size()){
+						System.out.println("Podano z³¹ wartoœæ!");
+					} else {
+						removeVertex(vert);
+						System.out.println("Usuniêto podany wierzcho³ek.");
+					}
 					break;
 				case(5):
 					System.out.println("Proszê podaæ nr wierzcho³ka: ");
 					vert = scanVert.nextInt() - 1;
-					deg = vertDeg(vert);
-					System.out.println("Stopieñ wierzcho³ka wynosi: " + deg);
+					if(vert < 0 || vert > matrix.size()){
+						System.out.println("Podano z³¹ wartoœæ!");
+					} else {
+						deg = vertDeg(vert);
+						System.out.println("Stopieñ wierzcho³ka wynosi: " + deg);
+					}
 					break;
 				case(6):
 					deg2 = minMaxDeg();
@@ -81,6 +95,16 @@ public class Main {
 					tempMatrix = matrixMultiply(matrixMultiply(matrix));
 					checkCycles(tempMatrix);
 					tempMatrix.clear();
+					break;
+				case(9):
+					System.out.println("Proszê podaæ kolejne liczby ci¹gu (oddzielone spacj¹): ");
+					newData = scanVert.nextLine().trim().split(" ");
+					for (int i = 0; i < newData.length; i++) {
+						degList.add(Integer.parseInt(newData[i]));
+					}
+					isGraphic(degList);
+					degList.clear();
+					newData = null;
 					break;
 			}
 		}
@@ -203,19 +227,12 @@ public class Main {
 				((ArrayList<Integer>)resultMatrix.get(i)).add(temp);
 			}
 		}
-		
-//		for(int i = 0; i < resultMatrix.size(); i++){
-//			System.out.println();
-//			for(int j = 0; j < ((ArrayList<?>)resultMatrix.get(i)).size(); j++){
-//				System.out.print(((ArrayList<?>)resultMatrix.get(i)).get(j) + " | ");
-//			}
-//		}
 		return resultMatrix;
 	}
 	
 	//Szukanie C3 w macierzy s¹siedztwa
 	@SuppressWarnings("unchecked")
-	private static void checkCycles(ArrayList<ArrayList<?>> tempMatrix) {
+	public static void checkCycles(ArrayList<ArrayList<?>> tempMatrix) {
 		int diagSum = 0;
 		
 		for(int i = 0; i < tempMatrix.size(); i++){
@@ -228,6 +245,51 @@ public class Main {
 			//Dla grafów nieskierowanych
 			System.out.println("Iloœæ cykli C3 w aktualnym grafie: " + (diagSum/6));
 		}
+	}
+	
+	//Wczytanie ci¹gu i sprawdzenie czy jest graficzny
+	public static void isGraphic(ArrayList<Integer> degList){
+		int len = degList.size();
+		int sum = 0;
+		int temp;
+		boolean result = true;
+		
+		Collections.sort(degList);
+		Collections.reverse(degList);
+		
+		//Sprawdzam czy suma jest parszysta(musi byæ)
+		for(int i = 0; i < len; i++){
+			sum += degList.get(i);
+		}
+		if(sum%2 == 0){
+			while(degList.get(0) != 0 && result){				
+				temp = 0;
+				for(int i = 1; i < len; i++){
+					if(degList.get(i) != 0){
+						temp++;
+					}
+				}
+				//Jeœli nie mamy wystarczaj¹cej iloœci dod. elementów - nie jest graficzny
+				if(degList.get(0) > temp){
+					result = false;
+				} else{
+					for(int i = 1; i <= degList.get(0); i++){
+						degList.set(i, degList.get(i) - 1);
+					}
+				}
+				
+				degList.set(0, 0);
+				Collections.sort(degList);
+				Collections.reverse(degList);
+			}
+		} else {
+			result = false;
+		}
+		
+		if(result)
+			System.out.println("Podany ci¹g jest graficzny.");
+		else
+			System.out.println("Podany ci¹g nie jest graficzny.");
 	}
 	
 }
